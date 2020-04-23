@@ -1,8 +1,13 @@
-import ep from 'errorback-promise';
-import ContextKeeper from 'audio-context-singleton';
-import { to } from 'await-to-js';
+var ep = require('errorback-promise');
+var ContextKeeper = require('audio-context-singleton');
+var { to } = require('await-to-js');
 
-function micToBuffer({ onRecordingStart, onEnded, onError, maxSeconds = 60 }) {
+async function micToBuffer({
+  onRecordingStart,
+  onEnded,
+  onError,
+  maxSeconds = 60
+}) {
   if (!navigator.mediaDevices) {
     callNextTick(
       onError,
