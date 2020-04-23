@@ -1,6 +1,6 @@
 {
   "name": "mic-to-buffer",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A thing that lets you record from the mic in the browser and get an AudioBuffer from the recording.",
   "main": "index.js",
   "repository": {
