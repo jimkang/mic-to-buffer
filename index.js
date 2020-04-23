@@ -1,6 +1,5 @@
 var ep = require('errorback-promise');
 var ContextKeeper = require('audio-context-singleton');
-var { to } = require('await-to-js');
 
 async function micToBuffer({
   onRecordingStart,
@@ -24,56 +23,56 @@ async function micToBuffer({
     return;
   }
   var audioCtx = result.values[0];
-  var [error, audioStream] = await to(
-    navigator.mediaDevices.getUserMedia({ audio: true })
-  );
-  if (error) {
-    callNextTick(onError, error);
-    return;
-  }
 
-  var recordingBuffer = new AudioBuffer({
-    length: maxSeconds * audioCtx.sampleRate,
-    numberOfChannels: 1,
-    sampleRate: audioCtx.sampleRate
-  });
-  var recordingBufferLength = 0;
+  navigator.mediaDevices
+    .getUserMedia({ audio: true })
+    .then(useStream)
+    .catch(onError);
 
-  var recorder = audioCtx.createScriptProcessor(4096, 1, 1);
-  recorder.onaudioprocess = saveChunk;
-  let source = audioCtx.createMediaStreamSource(audioStream);
-  source.connect(recorder);
-  // If you create a ScriptProcessorNode with no
-  // destination, it will never get audioprocess events.
-  recorder.connect(audioCtx.destination);
-  callNextTick(onRecordingStart, stopRecording);
-
-  function stopRecording() {
-    callNextTick(sendBuffer);
-  }
-
-  function saveChunk(e) {
-    var channelData = new Float32Array(e.inputBuffer.length);
-    e.inputBuffer.copyFromChannel(channelData, 0, 0);
-    recordingBuffer.copyToChannel(channelData, 0, recordingBufferLength);
-    recordingBufferLength += channelData.length;
-  }
-
-  function sendBuffer() {
-    onEnded(copyAudioBuffer(recordingBuffer, recordingBufferLength));
-  }
-
-  function copyAudioBuffer(src, length) {
-    var dest = new AudioBuffer({
-      length,
+  function useStream(audioStream) {
+    var recordingBuffer = new AudioBuffer({
+      length: maxSeconds * audioCtx.sampleRate,
       numberOfChannels: 1,
-      sampleRate: src.sampleRate
+      sampleRate: audioCtx.sampleRate
     });
+    var recordingBufferLength = 0;
 
-    var pcmData = src.getChannelData(0).slice(0, length);
+    var recorder = audioCtx.createScriptProcessor(4096, 1, 1);
+    recorder.onaudioprocess = saveChunk;
+    let source = audioCtx.createMediaStreamSource(audioStream);
+    source.connect(recorder);
+    // If you create a ScriptProcessorNode with no
+    // destination, it will never get audioprocess events.
+    recorder.connect(audioCtx.destination);
+    callNextTick(onRecordingStart, stopRecording);
 
-    dest.copyToChannel(pcmData, 0, 0);
-    return dest;
+    function stopRecording() {
+      callNextTick(sendBuffer);
+    }
+
+    function saveChunk(e) {
+      var channelData = new Float32Array(e.inputBuffer.length);
+      e.inputBuffer.copyFromChannel(channelData, 0, 0);
+      recordingBuffer.copyToChannel(channelData, 0, recordingBufferLength);
+      recordingBufferLength += channelData.length;
+    }
+
+    function sendBuffer() {
+      onEnded(copyAudioBuffer(recordingBuffer, recordingBufferLength));
+    }
+
+    function copyAudioBuffer(src, length) {
+      var dest = new AudioBuffer({
+        length,
+        numberOfChannels: 1,
+        sampleRate: src.sampleRate
+      });
+
+      var pcmData = src.getChannelData(0).slice(0, length);
+
+      dest.copyToChannel(pcmData, 0, 0);
+      return dest;
+    }
   }
 }
 

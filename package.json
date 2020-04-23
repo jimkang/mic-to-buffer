@@ -23,7 +23,6 @@
   },
   "dependencies": {
     "audio-context-singleton": "^1.0.2",
-    "await-to-js": "^2.1.1",
     "errorback-promise": "^1.0.0"
   }
 }
