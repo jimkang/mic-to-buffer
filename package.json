@@ -1,0 +1,28 @@
+{
+  "name": "mic-to-buffer",
+  "version": "1.0.0",
+  "description": "A thing that lets you record from the mic in the browser and get an AudioBuffer from the recording.",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:jimkang/mic-to-buffer.git"
+  },
+  "keywords": [
+    "audio",
+    "browser",
+    "utility"
+  ],
+  "author": "Jim Kang",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/jimkang/mic-to-buffer/issues"
+  },
+  "homepage": "https://github.com/jimkang/mic-to-buffer",
+  "devDependencies": {
+  },
+  "dependencies": {
+    "audio-context-singleton": "^1.0.2",
+    "await-to-js": "^2.1.1",
+    "errorback-promise": "^1.0.0"
+  }
+}
