@@ -5,6 +5,7 @@ async function micToBuffer({
   onRecordingStart,
   onEnded,
   onError,
+  addNodes,
   maxSeconds = 60
 }) {
   if (!navigator.mediaDevices) {
@@ -29,6 +30,8 @@ async function micToBuffer({
     .then(useStream)
     .catch(onError);
 
+  return { audioCtx };
+
   function useStream(audioStream) {
     var recordingBuffer = new AudioBuffer({
       length: maxSeconds * audioCtx.sampleRate,
@@ -44,6 +47,11 @@ async function micToBuffer({
     // If you create a ScriptProcessorNode with no
     // destination, it will never get audioprocess events.
     recorder.connect(audioCtx.destination);
+
+    if (addNodes) {
+      addNodes({ audioCtx, micNode: source, recorderNode: recorder });
+    }
+
     callNextTick(onRecordingStart, stopRecording);
 
     function stopRecording() {

@@ -19,7 +19,7 @@
   },
   "homepage": "https://github.com/jimkang/mic-to-buffer",
   "devDependencies": {
-    "eslint": "^6.8.0"
+    "eslint": "^7.11.0"
   },
   "dependencies": {
     "audio-context-singleton": "^1.0.2",

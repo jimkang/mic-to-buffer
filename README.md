@@ -18,7 +18,11 @@ Usage
     // When the user clicks a button to start recording,
     // call micToBuffer.
     function onRecordAudioClick() {
-      micToBuffer({ onEnded: save, onError: handleError, onRecordingStart });
+      var { audioCtx } = micToBuffer({ onEnded: save, onError: handleError, onRecordingStart, addNodes });
+    }
+
+    function addNodes({ audioCtx, micNode, recorderNode }) {
+      // You can chain AudioNodes to the mic node here, if you like.
     }
 
     // Save the stopRecording callback for later.
